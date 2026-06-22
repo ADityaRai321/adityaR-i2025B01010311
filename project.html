@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TechGear Hub - Premium Consumer Electronics</title>
+    <style>
+        /* CSS Variables for color scheme */
+        :root {
+            --navy: #1e3a8a;
+            --teal: #0d9488;
+            --white: #ffffff;
+            --light-gray: #f8fafc;
+            --shadow: 0 4px 12px rgba(0,0,0,0.1);
+            --hover-shadow: 0 8px 24px rgba(0,0,0,0.2);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #334155;
+            scroll-behavior: smooth;
+        }
+
+        /* Header: Logo and navigation bar with active state */
+        header {
+            background: var(--navy);
+            color: var(--white);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: var(--shadow);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+        }
+
+        nav {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-link {
+            color: var(--white);
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            transition: background 0.3s ease;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background: var(--teal);
+        }
+
+        /* Hero Section: Full-width banner */
+        .hero {
+            background: linear-gradient(135deg, var(--navy), var(--teal)),
+                        url('https://source.unsplash.com/random/1920x800/?technology');
+            background-size: cover;
+            background-position: center;
+            height: 60vh;
+            min-height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: var(--white);
+        }
+
+        .hero-content h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .search-bar {
+            width: 100%;
+            max-width: 500px;
+            padding: 1rem;
+            font-size: 1.1rem;
+            border: none;
+            border-radius: 50px 0 0 50px;
+            outline: none;
+        }
+
+        .cta-btn {
+            padding: 1rem 2rem;
+            font-size: 1.2rem;
+            background: var(--teal);
+            color: var(--white);
+            border: none;
+            border-radius: 0 50px 50px 0;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .cta-btn:hover {
+            transform: scale(1.05);
+        }
+
+        /* Products Grid: Responsive grid with hover effects */
+        .products {
+            padding: 4rem 2rem;
+            background: var(--light-gray);
+        }
+
+        .products h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            color: var(--navy);
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .product-card {
+            background: var(--white);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .product-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--hover-shadow);
+        }
+
+        .product-image img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+        }
+
+        .product-card h3 {
+            padding: 1rem;
+            font-size: 1.3rem;
+            color: var(--navy);
+        }
+
+        .price {
+            padding: 0 1rem 1rem;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .original {
+            text-decoration: line-through;
+            color: #64748b;
+            margin-right: 0.5rem;
+        }
+
+        .rating {
+            padding: 0 1rem 1rem;
+            color: #fbbf24;
+            font-size: 1.1rem;
+        }
+
+        .add-to-cart {
+            width: 100%;
+            padding: 1rem;
+            background: var(--teal);
+            color: var(--white);
+            border: none;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .add-to-cart:hover, .add-to-cart.adding {
+            background: #0f766e;
+        }
+
+        .add-to-cart.loading::after {
+            content: ' ⏳';
+        }
+
+        /* Cart Sidebar: Toggleable overlay sidebar */
+        .cart-sidebar {
+            position: fixed;
+            top: 0;
+            right: -400px;
+            width: 400px;
+            height: 100vh;
+            background: var(--white);
+            box-shadow: -4px 0 20px rgba(0,0,0,0.2);
+            transition: right 0.3s ease;
+            z-index: 200;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+
+        .cart-sidebar.open {
+            right: 0;
+        }
+
+        .cart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .close-cart {
+            background: none;
+            border: none;
+            font-size: 2rem;
+            cursor: pointer;
+            color: #64748b;
+        }
+
+        .cart-item {
+            display: flex;
+            gap: 1rem;
+            padding: 1rem 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .cart-item img {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+
+        .cart-item-details h4 {
+            margin-bottom: 0.5rem;
+        }
+
+        .qty-controls {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .qty-btn {
+            background: var(--light-gray);
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .cart-total {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 2px solid var(--navy);
+            text-align: center;
+        }
+
+        .checkout-btn {
+            width: 100%;
+            padding: 1rem;
+            background: var(--navy);
+            color: var(--white);
+            border: none;
+            font-size: 1.1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 1rem;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease;
+            z-index: 150;
+        }
+
+        .overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--navy);
+            color: var(--white);
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: var(--white);
+            text-decoration: none;
+        }
+
+        .social {
+            margin-left: 2rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem;
+            }
+
+            nav {
+                gap: 1rem;
+            }
+
+            .hero-content h1 {
+                font-size: 2rem;
+            }
+
+            .search-bar {
+                border-radius: 25px;
+                margin-bottom: 1rem;
+            }
+
+            .cta-btn {
+                border-radius: 25px;
+            }
+
+            .products-grid {
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                gap: 1.5rem;
+            }
+
+            .cart-sidebar {
+                width: 100%;
+                right: -100%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .products-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header: Sticky navigation with cart toggle -->
+    <header role="banner">
+        <div class="logo" aria-label="TechGear Hub">TechGear Hub</div>
+        <nav role="navigation" aria-label="Main navigation">
+            <a href="#home" class="nav-link active">Home</a>
+            <a href="#products" class="nav-link">Products</a>
+            <a href="#" class="nav-link cart-toggle" id="cartToggle" aria-label="Shopping cart">Cart (<span id="cartCount">0</span>)</a>
+            <a href="#contact" class="nav-link">Contact</a>
+        </nav>
+    </header>
+
+    <!-- Hero Section: Promotional banner with search and CTA -->
+    <section id="home" class="hero" role="banner" aria-labelledby="hero-title">
+        <div class="hero-content">
+            <h1 id="hero-title">Discover Amazing Tech Deals!</h1>
+            <input type="search" class="search-bar" placeholder="Search products..." aria-label="Search products">
+            <button class="cta-btn" onclick="scrollToProducts()">Shop Now</button>
+        </div>
+    </section>
+
+    <!-- Products Grid: 12 cards in responsive grid -->
+    <section id="products" class="products" role="main" aria-labelledby="products-title">
+        <h2 id="products-title">Featured Products</h2>
+        <div class="products-grid">
+            <!-- Headphones -->
+            <article class="product-card" role="article">
+                <div class="product-image">
+                    <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxASEhUQEBAPFRUQDxUQDxAVEA8QFRAVFREWGRURFRYYHSggGBolGxUVITEhJiorLjAuFx8zODMtNygtMCsBCgoKDQ0NFQ8PFSsZFRktLS0rLS0rKy0rNysrMDctMis3Ky0tKy0tMDcrKzgrLS0rKys3KzcrKysrKy4rKysrK//AABEIARQAtgMBIgACEQEDEQH/xAAcAAABBAMBAAAAAAAAAAAAAAAAAwQFBwECBgj/xABKEAABAwICBgYFBwgIBwAAAAABAAIDBBEFIQYHEjFBYRMiUXGBkTJSobHBFCNCYoKS0SRkcpOissLhM0NTVGNlc/AVg6OztMPx/8QAFgEBAQEAAAAAAAAAAAAAAAAAAAEC/8QAGhEBAQACAwAAAAAAAAAAAAAAABEBIQIxQf/aAAwDAQACEQMRAD8AvFCEIBCEIBCEIBCEIBCEIBCTqahkbTJI5rWtF3OJsAO0lVZpdrMJvFR3a3cZjk936I+iOe/uQWFjOkNLSj56UB1riMdZ58OHebBcLiutE5inja0es/ru77DIe1VTWYm55Jc4kk3JJuSe0pk+rVHfVWnFVJ6VRL3Nd0Y8m2TVukLzvlk++78Vw/ypKMqUqLAh0jqmZsqJu7pHEeV7KZw3WNUtyk2JBx2m7J8C23uKrWkrSMrpapk+kEF5YVp3Sy2Em1ET29Zn3hn5gLqIpGuAc1wcCLhwIIPMELzVS1h7V0mA6Tz0zrxvyv1ozmx3ePiM0F6IUNo1pFDWM2mdV7bdJETct5jtbzUyooQhCAQhCAQhCAQhCAQhCATfEK2OCN00rg1jBtOceH80u5wAJJAAFyTkABxVBazdNzVydDC4iCJ1m/4rh/WHl2fzQaac6cyVjy1pLIWn5uO+/wCu/tPuXDz1d01mnJSbWkoFHTFYBJS0VMpCmpAiI+Kme7cE6GFT2uGk9y6GhpB2LssD0dqZQDHC7Z9d3Vb5nf4KwVMx5BsbgjeCpBk12qytNNW8rqd9SzojNAwyFjA4mVjc3N3ZuAuRlna3FVPBJl3oHlNJmpKNyhKd/WUzCckEvguLy00rZojZzDu4OHFjuRV8YNiUdTCyeP0ZG3txadzmHmCCPBedgrC1RYwWyyUbjlI3pouT22D2jvbY/YKGFqIQhRQhCEAhCEAhCEAhCjtIcXZSU8lTJujbcD1nbmtHebIOB1x6W9FH8hhd15W3qCD6LDuZ3u93eqIqJrlP8exSSeV80jrvkeXuPM8ByG7wUU0XKBSJl1IQQ2SVOxPGoFGBdHoxgctVII4mEne47mtHa48FH6M4LLWztghGZze7gxvFxXofR7A4aOIQwt5vefSkdxcVRG6PaG09MA5wEknFzh1Qfqt+JXSoQoBeXdMcKFJXVNO0WbHMTGLWAjkAkY0cg14b9leolROvKj2a+OXhNSNHe6OR4J8nM8kFcxnrKapX5KCaespekciJIFP9G6ww1tNIOFTG0/oyO2H/ALL3KNaVmkN6iADeamIDvMrbKj0whCFFCEIQCEIQCEIQCpbXjpHtSMomO6sQ6Sbm9w6rT3DP7St/E61kEMk7zZsUbnu7mi9l5Qx7EX1E0kzz1pZHPd3k7vDd4II2R1yt4WpNoTiMIHMZS8Yc4hjAS5zg1rRmXEmwA8U1BVoak9GelldXyt6kB2IAR6Uls3/ZB8zyRFjav9FW0FMGuAM0oD6h/Pgwch+K6hCEUIQhAKoNf1PnRy9nTxnx6Ej91yt9Vdr9b+S0zvzst84JD/Cgo++alKQqJvmpOkKIkw5PdEoOlxGkj/OmSW7eivKfZGVHE5LrNTlH0mJGQjKnpnvB7HPLWD9lz/JUXqhCFFCEIQCEIQCEIQVvrvxroqRlM09apf1v9NlifM7K8/PNyu+1yYv0+IPYDdtO0QN7xm/9o28FwICDLAl2hasalQEC+HUMk8rIIhd8rwxg5k7zyG/wXqXR3CI6Omipo90TACfWdvc88yblVpqR0WsHYjK3feOlB7Nz5PgPFW6gEIQgEIQgFWWv0fkNOf8AMG/+LUKzVWWv0/kNOP8AMGnypaj8UFEDepOkUUN6laXciHT3ZK0tQ9H1Kuo9aWOAcujYXn/ut8gqomdkr11OUuxhkbrWM0ssp5/OFgP3Y2qq7dCEKAQhCAQhCATbEqxsMMkzt0UbpD9lpPwTlcPrixPocOewHOoe2Ed19p3safNB54xGpdLI6R3pSPc93e4kn3pJrVjeUsAgAFOaH4A+uqo6dtwHHald6kY9J3wHMhQoXoHVFoz8lpenkbaWqAebjNkf0GfE9/JEdtRUrIo2xRtDWRsDGNHAAWASyEIoQhCAQhCAVW6/nfktM387LvKCQfxK0lVevinkdFSlrTsNkk6R9iWscQwMB7L9a3cgpGOLPf7FNU9JlcH2LnWzybRDQMjYXBF7KYbW1EbbuiY4drXEFBvVAjevSWglP0eHUbSLH5HE5w7HOjDne0leZ5KvpGGQNIABvxsQNxXq6hh2I2R+pG1n3WgfBAuhCEAhCEAhCEAqU1+4leWCmB/o43SuHN5s32NPmrrXmXWfiHT4lUOvcMk6FvdGNn3goOXial7LELVuQiOj1d4B8trY4nC8cZ6afs2GkdXxNh4lelQLZDhuCrrUlgvRUjqpw61U/qn/AA2Ehvmdo+SsZFCEIQCEIQCEIQCRrHsbG90gBY1jnPBAILQCTcHkllz2sKcswyscDYmkkYD2bbdi4+8g8xtdtyF5aGl7i8tAsGlxuWgcALqaq2dTwURSC7x3qZxA9UIO/wBVmgNJUUzayfbdtyvHQ3DWOEbyzrZXObTlcDvVxLltV9PsYXSj1o3SfrJXv/iXUoBCEIBCEIBCEINJidkloudk7I3XNsgvLekmGVNNNasidG6VznjasQ+7usWuGRzK9Tqh9eVV0lcyLhBTtH2nuLj7A1BxTWMIyt4JMUxc4MZve4NaOZNh7SoZ0MocS3IA5WuFfOrjQSlkpaWtm6QzX6b0+qSHnYBbbdYBBYuD0LYIIoG7oomx/daASniEIBCEIBCFF4ppDR0+U9RG0jey+0/7jbn2IJRC4iq1oYe02aKh/NsbWj9pwPsSMWtSjO+GoH6o/wASDvVxutuq6PDZf8SSKO3b861xHO4aQndDp5QSZdI5hPB7CPa24HmuU15V7H0EHRSNe19c27muDgQ2nmyuOZagpXDZ29JZxtY7zu8TwUvirsvBReF0137bd44Hcfw708mhe6VsYY0B7msAsy2042vbK+/iEHpjRWl6KipYv7OkhYe9sTQVKrDW2FhwFllAIQhAIQhAIQhALzBrHxPpMQqXjP58sb3M6g/dXpmsqBHG+RxADGFxvluF15cqcPc57pJLXe4vI37zf4oG0Rb0QucznvXpzROk6KipojvZTRg9+wCfaV5uDGbTSWjquBt22O5XPh+tOkdZr4ZmWAGWw8D2hI1nlcY10sBCh8M0oop8o52XP0XHYd5FTCMhRGP6RU9G28rruIuyJti93O3AczkoPTfThlJeCAtdPbrHe2C/rdruxvieANTTVUkzzJK9zi83c4m5ceaDp8e03q6klsbjEz1IyQSPrSbz4WHJcrJD2lLhwA7AmNZiLRkFUN6iKyZ9OG8UhUVZcU3tdRUxDi7G7ymGK4u2cN2AdlpJucto5C9vApjNAmdK7qgdgt5IJzBBvKn8Ow13/FKaB398hd2XayUONwcxkw3BzCidHItoges8N4cTbiQPMhSUGJdBiTamJrfmpDI0WaQ7ajIudk2N9q922HZZT0ek0KH0Z0ihrYukiNnNsJYyc2H4jsKmFQIQhAIQhAKKx/HoaRm1IbuP9HGCNp5+A5pHS3SFlFCZHWL3dWGP13fgN5VL4niskjnTTPLnv3nsHBoHADsQP9KtKppyTI/L6MTTZjfDieZXGTTl5WtVOXFbwssqjMcaU2wEhUTbIUTPX80HQR1NtxU/Q6aVsDCyOd1nNIANn7N+Lb7iuEoZS83+i3efgnjpblFPumLiXOJJJJJJJJJNySTvN0v8oAFyowS2TWoqiUD2sxEnIKNfISkS663aoFGNTmNiSiCdxhBo+PJQUTbOc3seffcLpi1c/XkMlO1kHNFj3IOo0ac1pa57i0B21tAEkEC7TlnvskI3h08jhuzDcgBa4AAsALWHYEhRVkXR2D237L296KE+ke0ge9JuiZwjGJqSZs8DrObkQc2vbxY4cQf5jNX3ovpDDXQCeLI+jLGSC6J9s2n3g8QQvN8j1M6D6TuoKpshJ6KS0dS3fdl/TA9ZpNx4jig9HIWGOBAIIIIuCDcEHcQhBlI1lUyJjpZHBrI2lz3HcAEsql1z6Sm7cPid2SVBHP0I/wCI+CDldJNIn11S6d1wxvVgZ6jL5eJ3lQVfUcFrE6wTKofcqo2gFynRNgkYBktaySzUEXitUoeJr5HBoGZPgO0lO5QXG6fUkWw2/wBJw8h2eO/yUUuwBjQxu4e08SVkOSO0tXvQbyypuXLVzkINwlWJEJViB1EnsQTOFP4QgWDUyq6RrvSF1ItahzFUc6MHbtAgEZqWbG1os0Accks5tkhIVFJSOTdxSkhSDig9A6oMZNRQNjcbvpHmnPNgAMZ7g0hv2ChcVqJrtmpqIScpadsvK8Umz/7vYsILlxGsZDE+Z5s2KN0ju5ouvLuI4g+onkqJD1pXmR3LaOQ8BYeCuvXRinRUHQg9aplEf2G9Z3uA8VQ7D70DwvyTW9ytnPWkW9EPmJhib+Han4UXVm7+5AnDEOO4ZnnyWz33Q82FvEpO6K3Jtn5JBzkOctLoM3WQtVkFBuEqxIhO4IeJ8AgWhS/Tu4ZJJCDYvJ3k+ZQFhZQbiR3afehz7rRbBAi8pIlOJWcQmqDr9WUpbVvI/urx/wBWL8EJ9qboelrZBwbRvJPMzQ2+KED3XpiO1VxQA5QwbZH1pHH4NHmq1a7JdNrQqukxSqPqSNjHcyNo991ym1kgWL0pAc00DkvC7NESSi5PTPJSY3KLnyLuZsik3OutHORdJuKDBKwsXQgys3Wt1lguQBxNkDujiv1juG7mU9WGNAAA4LKAQhZCDKEICDK2WAshBkJnOyx7808SNUNx52/35ILX1CUJtVVB3ExwN5Foc9/sfGhddqqwzoMNhuLOnBqX5Wv0huy/2AweCygoXTd98Qqyf73L++VAF2S6PWJDsYnVt/OXO+8A74rmXFBkOS8bk0ulGPQTdO+4UdW+lZb0c+aTrz1z4e4IG7ikiVvIUiSgyi61RdBtdOcPbd1+we//AGU0un2F/S8PigfoQEIBZQFlALKAshBlZCwFsgE6wvDDVTw0zb3nnbGSN4ab7bvBocfBNlYupfB+kqZKtw6tPH0cZt/WSbyOYYCP+YguSOMNAa0ABoDWgbgALAIWyEHnrXlh5ixHpbZVMDH3+szqO9gb5quHr0LrxwIz0IqGC76N+2e0xuyf5dU+BXnolBoSshy0P/xYugWZJZLvftZ+CZXSkD+HbuQbyJElLSpAlBm6wsIQZunuFOzcO0A+V/xTBLUkuy4HhuPcUE2EIQgyFlAQgytlgLYIBZQsoBeidAcDNHRRxOFpH/PT/wCo+12n9EBrfsqtNVOihqJhWSt+Zp33jBGU0ozFu1rTYnnYcCFdqAQhCBOoha9rmPALXtLXNO4gixBXljTzRh+H1b4CCYzeSnf68ZOXiNx7ua9VrmtPdEYsSpzE6zZWXfTy29B1tx7WncQg8qOSd1JYzhU1NK+CdhZJGbOafY5p4tPAqPcy6DUFbBabsj5rYAoHZFxdNXhL00wBz3Hfy5hL1NJltDMHMEbkEehbOYQtbIMIWbLOygksOqrjYccx6PMdnen4XPhqkaatO54v9bj4oJBZWjHg7iFuEGQtlhLwUr3+i0nnuHmUCS67QXQmWvcJH7UdM13XltYykb2RX39hduHM5LodCtWW3sz119jeyAXaX83neG8sie7fbUMTWNDGNa1rQGta0BoaAMgANwQJ0VJHDG2KJjWMjaGsYMg0BLoQgEIQgEIQg5jTfQqmxKO0g2JWD5mcAbTPqn1m8l560o0Oq6CTYnjOyT1JW3LJB2g8DyOa9WJCto45mGOVjXsdk5rgHAoPIHQA5EJN1G4ZtzHYr10q1QxyXfQydGd/RPuW9zXbx4qssV0Zr6N1qinkA4PALmnuc3JByYLdzgWlP6IvZus9p9JhOR5jsPNSnyMOHWZ4EZrQYEN8b3N9oQay4Y2Ru3Ff6zTk5vePjuUVLRkbwugp8Nq2m7JIzbcSCD5hStDg1RM7ZlZG6/olgdtX7gM/Yg4boVkQru8W0Fq4es+CQNtfaDS4DvI3eKgzhbhwQQjYEtHTKZZhx7E8hw49iCFhouSkqbDr8F0eFaOTzG0UL3cw07I73bh4ld1gmrs5OqXho/s2WLvF24eF1RwOD6PvleGRRlzjwAGXMngOZVraL6FxU9pJtl8gzA3sjPK/pHmf5rosPw6GBuxCxrRxtvdzcd5PenSgEIQgEIQgEIQgEIQgEIQgFq9gIsQCDvBFwUIQQtdohQSm76aMH1mjYP7KipNXlBfITDukHxCEIHVLoLQtz2Hu/SkPwsp2iw+GEWiiYzuaAfE70IQOkzqcKppDeSCB57XRMcfMhYQgSbo/RDdSUv6iL8ErHhNM03bTwAjcRDGCPYhCB4AsoQgEIQgEIQgEIQgEIQg//9k=" alt="Sony WH-1000XM5 Wireless Headphones" loading="lazy">
+                </div>
+                <h3>Sony WH-1000XM5 Headphones</h3>
+                <div class="price"><span class="original">₹32,990</span> ₹24,990</div>
+                <div class="rating" aria-label="Rating: 4.8 out of 5">★★★★★</div>
+                <button class="add-to-cart" data-id="1" data-name="Sony WH-1000XM5 Headphones" data-price="24990" aria-label="Add to cart">Add to Cart</button>
+            </article>
+            <article class="product-card">
+                <div class="product-image">
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSinfXUwUXzyB5hcyJyAaWNA9r5AHfYmgBAog&s" alt="Bose QuietComfort Headphones" loading="lazy">
+                </div>
+                <h3>Bose QuietComfort 45</h3>
+                <div class="price"><span class="original">₹29,900</span> ₹22,400</div>
+                <div class="rating">★★★★☆</div>
+                <button class="add-to-cart" data-id="2" data-name="Bose QuietComfort 45" data-price="22400" aria-label="Add to cart">Add to Cart</button>
+            </article>
+            <article class="product-card">
+                <div class="product-image">
+                    <img src="https://isensestore.in/uploads/products/1762413699_AirPods-Pro-2nd-generation__1__jpg" alt="Apple AirPods Pro" loading="lazy">
+                </div>
+                <h3>Apple AirPods Pro 2</h3>
+                <div class="price"><span class="original">₹26,900</span> ₹19,900</div>
+                <div class="rating">★★★★★</div>
+                <button class="add-to-cart" data-id="3" data-name="Apple AirPods Pro 2" data-price="19900" aria-label="Add to cart">Add to Cart</button>
+            </article>
+            <!-- Smartwatches -->
+            <article class="product-card">
+                <div class="product-image">
+                    <img src="https://m.media-amazon.com/images/I/41H9HdpwLRL._QL92_SH45_SX240_SY220_CR,0,0,240,220_.jpg" alt="Apple Watch Series 9" loading="lazy">
+                </div>
+                <h3>Apple Watch Series 9</h3>
+                <div class="price"><span class="original">₹44,900</span> ₹41,900</div>
+                <div class="rating">★★★★★</div>
+                <button class="add-to-cart" data-id="4" data-name="Apple Watch Series 9" data-price="41900" aria-label="Add to cart">Add to Cart</button>
+            </article>
+            <article class="product-card">
+                <div class="product-image">
+                    <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=800&q=80" alt="Samsung Galaxy Watch 6" loading="lazy">
+                </div>
+                <h3>Samsung Galaxy Watch 6</h3>
+                <div class="price"><span class="original">₹29,999</span> ₹26,499</div>
+                <div class="rating">★★★★☆</div>
+                <button class="add-to-cart" data-id="5" data-name="Samsung Galaxy Watch 6" data-price="26499" aria-label="Add to cart">Add to Cart</button>
+            </article>
+            <article class="product-card">
+                <div class="product-image">
+                    <img src="https://www.shutterstock.com/image-photo/shenzhen-china-july-2023-galaxy-260nw-2341360407.jpg" alt="Fitbit Versa 4" loading="lazy">
+                </div>
+                <h3>Fitbit Versa 4</h3>
+                <div class="price"><span class="original">₹21,999</span> ₹17,999</div>
+                <div class="rating">★★★★☆</div>
+                <button class="add-to-cart" data-id="6" data-name="Fitbit Versa 4" data-price="17999" aria-label="Add to cart">Add to Cart</button>
+            </article>
+            <!-- Laptops -->
+            <article class="product-card">
+                <div class="product-image">
+                    <img src="https://static0.pocketlintimages.com/wordpress/wp-content/uploads/wm/2023/06/apple-macbook-air-17.jpg?w=1600&h=900&fit=crop" alt="MacBook Air M2" loading="lazy">
+                </div>
+                <h3>MacBook Air M2</h3>
+                <div class="price"><span class="original">₹1,19,900</span> ₹1,09,900</div>
+                <div class="rating">★★★★★</div>
+                <button class="add-to-cart" data-id="7" data-name="MacBook Air M2" data-price="109900" aria-label="Add to cart">Add to Cart</button>
+            </article>
+            <article class="product-card">
+                <div class="product-image">
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT3HYwTmY0aMu6bybf1Gz0qWuC26YdZj4oEVw&s" alt="Dell XPS 13" loading="lazy">
+                </div>
+                <h3>Dell XPS 13</h3>
+                <div class="price"><span class="original">₹1,49,990</span> ₹1,29,990</div>
+                <div class="rating">★★★★★</div>
+                <button class="add-to-cart" data-id="8" data-name="Dell XPS 13" data-price="129990" aria-label="Add to cart">Add to Cart</button>
+            </article>
+            <article class="product-card">
+                <div class="product-image">
+                    <img src="https://dlcdnwebimgs.asus.com/files/media/8b74e7ee-b66a-4420-894e-3c3b980312ee/v2/img/design/color/strix-g-2022-green.png" alt="ASUS ROG Strix" loading="lazy">
+                </div>
+                <h3>ASUS ROG Strix G15</h3>
+                <div class="price"><span class="original">₹1,24,990</span> ₹1,09,990</div>
+                <div class="rating">★★★★☆</div>
+                <button class="add-to-cart" data-id="9" data-name="ASUS ROG Strix G15" data-price="109990" aria-label="Add to cart">Add to Cart</button>
+            </article>
+            <!-- Phone Cases -->
+            <article class="product-card">
+                <div class="product-image">
+                    <img src="https://m.media-amazon.com/images/I/71Gh0VOQtlL.jpg" alt="Spigen iPhone Case" loading="lazy">
+                </div>
+                <h3>Spigen Rugged Armor Case</h3>
+                <div class="price"><span class="original">₹2,499</span> ₹1,799</div>
+                <div class="rating">★★★★★</div>
+                <button class="add-to-cart" data-id="10" data-name="Spigen Rugged Armor Case" data-price="1799" aria-label="Add to cart">Add to Cart</button>
+            </article>
+            <article class="product-card">
+                <div class="product-image">
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSc_-X_Jbjn6IEe0mPIG0eYcXEcWL-okU7uUQ&s" alt="OtterBox Defender Case" loading="lazy">
+                </div>
+                <h3>OtterBox Defender</h3>
+                <div class="price"><span class="original">₹4,999</span> ₹3,499</div>
+                <div class="rating">★★★★☆</div>
+                <button class="add-to-cart" data-id="11" data-name="OtterBox Defender" data-price="3499" aria-label="Add to cart">Add to Cart</button>
+            </article>
+            <article class="product-card">
+                <div class="product-image">
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRCWtH_pCp05SpJCvPMQWF8h3J67l60d9av-w&s" alt="Ringke Fusion Case" loading="lazy">
+                </div>
+                <h3>Ringke Fusion Case</h3>
+                <div class="price"><span class="original">₹1,799</span> ₹1,299</div>
+                <div class="rating">★★★★★</div>
+                <button class="add-to-cart" data-id="12" data-name="Ringke Fusion Case" data-price="1299" aria-label="Add to cart">Add to Cart</button>
+            </article>
+        </div>
+    </section>
+
+    <!-- Shopping Cart Sidebar: Persistent with localStorage -->
+    <aside class="cart-sidebar" id="cartSidebar" role="dialog" aria-labelledby="cart-title" aria-hidden="true">
+        <div class="cart-header">
+            <h3 id="cart-title">Shopping Cart</h3>
+            <button class="close-cart" aria-label="Close cart">&times;</button>
+        </div>
+        <div class="cart-items" id="cartItems"></div>
+        <div class="cart-total">
+            <p><strong>Total: ₹<span id="cartTotal">0</span></strong></p>
+            <button class="checkout-btn" onclick="checkout()">Checkout</button>
+        </div>
+    </aside>
+
+    <!-- Overlay for modal-like behavior -->
+    <div class="overlay" id="overlay"></div>
+
+    <!-- Footer: Links and social icons -->
+    <footer role="contentinfo">
+        <div class="footer-links">
+            <a href="#about">About</a>
+            <a href="#privacy">Privacy</a>
+            <div class="social">
+                <a href="#" aria-label="Twitter">Twitter</a>
+                <a href="#" aria-label="Instagram">Instagram</a>
+            </div>
+        </div>
+        <p>&copy; 2025 TechGear Hub. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // JavaScript: Cart functionality with localStorage, toggles, smooth scroll, loading animation
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+        // Initialize cart display
+        function updateCartDisplay() {
+            const count = cart.reduce((sum, item) => sum + item.qty, 0);
+            document.getElementById('cartCount').textContent = count;
+            document.getElementById('cartTotal').textContent = cart.reduce((sum, item) => sum + (item.price * item.qty), 0).toLocaleString();
+            renderCartItems();
+        }
+
+        // Render cart items in sidebar
+        function renderCartItems() {
+            const container = document.getElementById('cartItems');
+            if (cart.length === 0) {
+                container.innerHTML = '<p>Your cart is empty.</p>';
+                return;
+            }
+            container.innerHTML = cart.map(item => `
+                <div class="cart-item">
+                    <img src="https://source.unsplash.com/random/60x60/?${item.name.toLowerCase().split(' ')[0]}" alt="${item.name}" loading="lazy">
+                    <div class="cart-item-details">
+                        <h4>${item.name}</h4>
+                        <p>₹${item.price.toLocaleString()}</p>
+                        <div class="qty-controls">
+                            <button class="qty-btn" onclick="updateQty(${item.id}, -1)">-</button>
+                            <span>${item.qty}</span>
+                            <button class="qty-btn" onclick="updateQty(${item.id}, 1)">+</button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Add to cart with loading animation
+        document.querySelectorAll('.add-to-cart').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const btn = e.target;
+                const id = btn.dataset.id;
+                const name = btn.dataset.name;
+                const price = parseInt(btn.dataset.price);
+
+                btn.textContent = 'Adding... ⏳';
+                btn.disabled = true;
+
+                setTimeout(() => {
+                    const existing = cart.find(item => item.id == id);
+                    if (existing) {
+                        existing.qty++;
+                    } else {
+                        cart.push({ id, name, price, qty: 1 });
+                    }
+                    localStorage.setItem('cart', JSON.stringify(cart));
+                    updateCartDisplay();
+                    btn.textContent = 'Added!';
+                    setTimeout(() => {
+                        btn.textContent = 'Add to Cart';
+                        btn.disabled = false;
+                    }, 1000);
+                }, 800);
+            });
+        });
+
+        // Update quantity
+        function updateQty(id, delta) {
+            const item = cart.find(item => item.id == id);
+            if (item) {
+                item.qty += delta;
+                if (item.qty <= 0) {
+                    cart = cart.filter(i => i.id != id);
+                }
+                localStorage.setItem('cart', JSON.stringify(cart));
+                updateCartDisplay();
+            }
+        }
+
+        // Toggle cart sidebar
+        document.getElementById('cartToggle').addEventListener('click', (e) => {
+            e.preventDefault();
+            toggleCart();
+        });
+
+        document.querySelector('.close-cart').addEventListener('click', toggleCart);
+        document.getElementById('overlay').addEventListener('click', toggleCart);
+
+        function toggleCart() {
+            const sidebar = document.getElementById('cartSidebar');
+            const overlay = document.getElementById('overlay');
+            sidebar.classList.toggle('open');
+            overlay.classList.toggle('active');
+            sidebar.setAttribute('aria-hidden', !sidebar.classList.contains('open'));
+        }
+
+        // Utility functions
+        function scrollToProducts() {
+            document.getElementById('products').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function checkout() {
+            if (cart.length === 0) return alert('Cart is empty!');
+            alert(`Proceeding to checkout with ₹${document.getElementById('cartTotal').textContent} total. Thanks for shopping!`);
+            cart = [];
+            localStorage.setItem('cart', JSON.stringify(cart));
+            updateCartDisplay();
+            toggleCart();
+        }
+
+        // Nav active state on scroll (simple)
+        window.addEventListener('scroll', () => {
+            const sections = ['home', 'products'];
+            const links = document.querySelectorAll('.nav-link');
+            let current = '';
+            sections.forEach(section => {
+                const el = document.getElementById(section);
+                if (el.getBoundingClientRect().top < 100) {
+                    current = section;
+                }
+            });
+            links.forEach(link => link.classList.remove('active'));
+            document.querySelector(`[href="#${current}"]`)?.classList.add('active');
+        });
+
+        // Initial load
+        updateCartDisplay();
+    </script>
+</body>
+</html>
